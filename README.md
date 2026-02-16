@@ -3,4 +3,4 @@ It includes an authentication endpoint and handles issuance of JWTs with expired
 This server can be tested against a test client as long as the server is RUNNING.
 Provided are screenshots of the coverage of the server and also a screenshot of the test server grading.
 To start running the server use the command "python server.py"
-Method that I used to make it work was keeping the gradebot in the same directory tree and, while the server was running, used the command ".\gradebot.exe project-1 --run="python server.py".
+Method that I used to make it work was keeping the gradebot in the same directory tree and, while the server was running in a separate terminal, used the command ".\gradebot.exe project-1 --run="python server.py".
