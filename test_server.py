@@ -1,7 +1,7 @@
 import jwt
 from datetime import datetime, timezone
 import pytest
-from app import create_app
+from server import create_app
 
 @pytest.fixture
 def app():
@@ -16,7 +16,6 @@ def test_jwks_only_active_key(app, client):
     assert resp.status_code == 200
     data = resp.get_json()
     keys = data["keys"]
-    # Only the active key should appear
     assert len(keys) == 1
     assert keys[0]["kid"] == app.config["ACTIVE_KEY"]["kid"]
 
@@ -24,7 +23,7 @@ def test_auth_valid_token(app, client):
     resp = client.post("/auth")
     assert resp.status_code == 200
     token = resp.get_json()["token"]
-    
+
     active_key = app.config["ACTIVE_KEY"]
     decoded = jwt.decode(
         token,
@@ -33,7 +32,7 @@ def test_auth_valid_token(app, client):
         audience="jwks-demo-client",
         issuer="jwks-demo"
     )
-    
+
     assert decoded["sub"] == "fake-user-id"
     assert decoded["exp"] > datetime.now(timezone.utc).timestamp()
 
@@ -41,7 +40,7 @@ def test_auth_expired_token(app, client):
     resp = client.post("/auth?expired=1")
     assert resp.status_code == 200
     token = resp.get_json()["token"]
-    
+
     expired_key = app.config["EXPIRED_KEY"]
     decoded = jwt.decode(
         token,
@@ -51,7 +50,7 @@ def test_auth_expired_token(app, client):
         audience="jwks-demo-client",
         issuer="jwks-demo"
     )
-    
+
     assert decoded["exp"] < datetime.now(timezone.utc).timestamp()
 
 def test_method_not_allowed(client):
